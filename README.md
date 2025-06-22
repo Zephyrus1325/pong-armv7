@@ -6,8 +6,8 @@ Pong feito 100% em assembly ArmV7
 
 | Estado | Autor | Função
 | ----------- | ----------- | ----------- |
-| ❓ | Marco | Ler teclas && Posição para pixel |
-| ❓ | Marco | Movimentar e renderizar raquetes |
+| ✅ | Marco | Ler teclas e Posição para pixel |
+| ✅ | Marco | Movimentar e renderizar raquetes |
 | ❓ | Marco | Audio, tela de inicio e controle de jogo |
 | ❓ | Bernardo | Movimentar e renderizar a bolinha |
 | ❓ | Bernardo | Detectar colisão com as raquetes |
