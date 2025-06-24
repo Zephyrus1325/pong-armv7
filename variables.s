@@ -52,7 +52,10 @@ PLAYER1_POS: .word 0      // Posição da raquete do jogador 1
 PLAYER2_POS: .word 0      // Posição da raquete do jogador 2
 POINTS1: .word 0          // Pontuação do jogador 1
 POINTS2: .word 0          // Pontuação do jogador 2
-
+BALL_X: .word 0          // Posição X da bola
+BALL_Y: .word 0          // Posição Y da bola
+BALL_DX: .word 0         // Velocidade X da bola
+BALL_DY: .word 0         // Velocidade Y da bola
 
 PIXEL_BUFFER_A: .skip 320*240*2 // Buffer de pixels 1
 PIXEL_BUFFER_B: .skip 320*240*2 // Buffer de pixels 2

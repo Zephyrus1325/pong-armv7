@@ -3,7 +3,7 @@
 // Parametro: nenhum
 // Retorno: Tecla lida em R0
 read_key:
-    push {r0, r1, lr}
+    push {r1, lr}
     ldr r1, =KEY_LENGTH   // Carrega o pointer para o contador de tamanho do buffer
     ldrb r0, [r1]       // Lê quantas teclas tem no buffer
     cmp r0, #0          // Se estiver vazio, sai da subrotina
@@ -15,7 +15,7 @@ read_key:
     ldrb r0, [r1]       // Lê mais uma tecla, de novo
     mov r0, #0          // Desconsidera a leitura (evita double click indesejado)
 read_key_exit:
-    pop {r0, r1, lr}
+    pop {r1, lr}
     mov pc, lr
 
 
@@ -68,7 +68,7 @@ restart_game:
     ldr r1, =PLAYER2_POS
     str r0, [r1]
 
-    // TODO: Colocar a bolinha em uma posição inicial padrão
+    bl reset_ball   //Codigo de inicializar a posição da bola
 
     pop {r0, r1, lr}
     mov pc, lr
@@ -82,6 +82,8 @@ game_logic:
     push {r0, r1, lr}
 
     bl get_controls
+
+    bl update_ball_physics //Processa movimento da bola e colisões
 
     pop {r0, r1, lr}
     mov pc, lr

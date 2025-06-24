@@ -216,6 +216,8 @@ render:
 
     bl draw_players
 
+    bl draw_ball
+
     mov r0, #40
     mov r1, #60
     mov r2, #0b00000001
