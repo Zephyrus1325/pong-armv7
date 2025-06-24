@@ -37,6 +37,100 @@ draw_pixel:
     pop {r0, r1, r2, r3, lr}
     mov pc, lr
 
+// Escritor de numero
+// Parametro: R0 - X | R1 - Y | R2 - Mascara
+// Retorno: Nenhum
+// Notas: r3 = resultado temp mascara
+draw_number:
+    push {r0, r1, r2, r3, r4, r5, lr}
+    mov r4, r2                      // Salva a mascara em um lugar mais "seguro"
+    ldr r2, =SEGMENT_SIZE           // Coloca o valor do segmento no r2 para facilitar chamadas de função
+    
+                    // Segmento A
+    ands r3, r4, #0b00000001        // Faz um and com a mascara, e salva flags
+    beq draw_number_f               // Se for zero, faz o proximo segmento
+    bl draw_lineh
+
+draw_number_f:      // Segmento F
+    ands r3, r4, #0b00100000        // Faz um and com a mascara, e salva flags
+    beq draw_number_b               // Se for zero, faz o proximo segmento
+    bl draw_linev
+
+draw_number_b:      // Segmento B
+    add r0, r0, r2                  // Soma X em number_size
+    ands r3, r4, #0b00000010        // Faz um and com a mascara, e salva flags
+    beq draw_number_c               // Se for zero, faz o proximo segmento
+    bl draw_linev
+
+
+draw_number_c:      // Segmento C 
+    add r1, r1, r2                  // Soma Y em number_size
+    ands r3, r4, #0b00000100        // Faz um and com a mascara, e salva flags
+    beq draw_number_g               // Se for zero, faz o proximo segmento
+    bl draw_linev
+
+draw_number_g:      // Segmento G
+    sub r0, r0, r2                  // subtrai X em number_size
+    ands r3, r4, #0b01000000        // Faz um and com a mascara, e salva flags
+    beq draw_number_e               // Se for zero, faz o proximo segmento
+    bl draw_linev
+
+draw_number_e:      // Segmento E  
+    ands r3, r4, #0b00010000        // Faz um and com a mascara, e salva flags
+    beq draw_number_d               // Se for zero, faz o proximo segmento
+    bl draw_lineh
+
+
+draw_number_d:      // Segmento D
+    add r1, r1, r2                  // Soma X em number_size
+    ands r3, r4, #0b00001000        // Faz um and com a mascara, e salva flags
+    beq draw_number_exit            // Se for zero, faz o proximo segmento
+    bl draw_lineh
+
+
+draw_number_exit:   
+
+    pop {r0, r1, r2, r3, r4, r5, lr}
+    mov pc, lr
+
+
+
+
+// Desenha uma linha na vertical uma determinada distancia
+// Parametro: R0 - X | R1 - Y | R2 - comprimento
+// Retorno: Nenhum
+draw_linev:
+    push {r0, r1, r2, lr}
+draw_linev_loop:
+    cmp r2, #0
+    beq draw_linev_exit
+    bl draw_pixel
+    add r1, r1, #1
+    sub r2, r2, #1
+    b draw_linev_loop
+draw_linev_exit:
+    pop {r0, r1, r2, lr}
+    mov pc, lr
+
+
+
+
+// Desenha uma linha na horizontal uma determinada distancia
+// Parametro: R0 - X | R1 - Y | R2 - comprimento
+// Retorno: Nenhum
+draw_lineh:
+    push {r0, r1, r2, lr}
+draw_lineh_loop:
+    cmp r2, #0
+    beq draw_lineh_exit
+    bl draw_pixel
+    add r0, r0, #1
+    sub r2, r2, #1
+    b draw_lineh_loop
+draw_lineh_exit:
+    pop {r0, r1, r2, lr}
+    mov pc, lr
+
 
 // Preenche o fundo com preto
 // Parametro: Nenhum
@@ -109,7 +203,7 @@ draw_players:
 // Parametro: Nenhum
 // Retorno: Nenhum
 render:
-    push {r0, r1, lr}
+    push {r0, r1, r2, r3, r4, lr}
     ldr r1, =DISPLAY_STATUS         // Carrega o Status do display
     ldr r0, [r1]
     and r0, r0, #1                  // Checa o bit 0 (Status)
@@ -122,12 +216,29 @@ render:
 
     bl draw_players
 
+    mov r0, #40
+    mov r1, #60
+    mov r2, #0b00000001
+    bl draw_number
+
+    mov r0, #60
+    mov r2, #0b00000010
+    bl draw_number
+
+    mov r0, #80
+    mov r2, #0b00000100
+    bl draw_number
+
+    mov r0, #100
+    mov r2, #0b00001000
+    bl draw_number
+
     ldr r1, =DISPLAY_FRONT_BUFFER   // Troca o buffer frontal com o backbuffer
     mov r0, #1
     str r0, [r1]
 
 render_exit:
-    pop {r0, r1, lr}
+    pop {r0, r1, r2, r3, r4, lr}
     mov pc, lr
 
 

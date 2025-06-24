@@ -3,7 +3,7 @@
 // Parametro: nenhum
 // Retorno: Tecla lida em R0
 read_key:
-    push {r1, lr}
+    push {r0, r1, lr}
     ldr r1, =KEY_LENGTH   // Carrega o pointer para o contador de tamanho do buffer
     ldrb r0, [r1]       // Lê quantas teclas tem no buffer
     cmp r0, #0          // Se estiver vazio, sai da subrotina
@@ -15,7 +15,7 @@ read_key:
     ldrb r0, [r1]       // Lê mais uma tecla, de novo
     mov r0, #0          // Desconsidera a leitura (evita double click indesejado)
 read_key_exit:
-    pop {r1, lr}
+    pop {r0, r1, lr}
     mov pc, lr
 
 
@@ -33,7 +33,7 @@ get_controls:
     ldr r1, =PLAYER1_DOWN
     cmp r0, r1
     beq adi
-    b main_loop
+    b get_controls_exit
 
 adi:
     ldr r1, =PLAYER1_POS
@@ -41,15 +41,15 @@ adi:
     cmp r0, #(HEIGHT-PADDLE_SIZE-5)
     addlt r0, r0, #8
     str r0, [r1]
-    b main_loop
+    b get_controls_exit
 subi:
     ldr r1, =PLAYER1_POS
     ldr r0, [r1]
     cmp r0, #(5)
     subgt r0, r0, #8
     str r0, [r1]
-    b main_loop
 
+get_controls_exit:
     pop {r0, r1, lr}
     mov pc, lr
 
@@ -85,3 +85,4 @@ game_logic:
 
     pop {r0, r1, lr}
     mov pc, lr
+    
