@@ -11,7 +11,6 @@ main_loop:
 
     b main_loop
 
-.include "ball.s"
 .include "game_control.s"
 .include "rendering.s"
 .include "variables.s"
