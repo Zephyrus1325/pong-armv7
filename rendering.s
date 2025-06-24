@@ -38,12 +38,14 @@ draw_pixel:
     mov pc, lr
 
 // Escritor de numero
-// Parametro: R0 - X | R1 - Y | R2 - Mascara
+// Parametro: R0 - X | R1 - Y | R2 - Numero
 // Retorno: Nenhum
 // Notas: r3 = resultado temp mascara
 draw_number:
     push {r0, r1, r2, r3, r4, r5, lr}
-    mov r4, r2                      // Salva a mascara em um lugar mais "seguro"
+    ldr r4, =SEG_DECODE             // Pega o endereço base dos segmentos
+    ldrb r4, [r4, r2]                // Carrega a mascara em relação ao numero selecionado 
+
     ldr r2, =SEGMENT_SIZE           // Coloca o valor do segmento no r2 para facilitar chamadas de função
     
                     // Segmento A
@@ -66,19 +68,19 @@ draw_number_b:      // Segmento B
 draw_number_c:      // Segmento C 
     add r1, r1, r2                  // Soma Y em number_size
     ands r3, r4, #0b00000100        // Faz um and com a mascara, e salva flags
-    beq draw_number_g               // Se for zero, faz o proximo segmento
-    bl draw_linev
-
-draw_number_g:      // Segmento G
-    sub r0, r0, r2                  // subtrai X em number_size
-    ands r3, r4, #0b01000000        // Faz um and com a mascara, e salva flags
     beq draw_number_e               // Se for zero, faz o proximo segmento
     bl draw_linev
 
-draw_number_e:      // Segmento E  
+draw_number_e:      // Segmento E
+    sub r0, r0, r2                  // subtrai X em number_size
+    ands r3, r4, #0b01000000        // Faz um and com a mascara, e salva flags
+    beq draw_number_g               // Se for zero, faz o proximo segmento
+    bl draw_lineh
+
+draw_number_g:      // Segmento G  
     ands r3, r4, #0b00010000        // Faz um and com a mascara, e salva flags
     beq draw_number_d               // Se for zero, faz o proximo segmento
-    bl draw_lineh
+    bl draw_linev
 
 
 draw_number_d:      // Segmento D
@@ -197,6 +199,36 @@ draw_players:
     pop {r0, r1, r2, lr}
     mov pc, lr  
 
+// Função que desenha as pontuações dos jogadores
+// Parametro: Nenhum
+// Retorno: Nenhum
+draw_points:
+    push {r0, r1, r2, r3, r4, r5, lr}
+    ldr r1, =POINT_HEIGHT       // Altura dos pontos
+    ldr r3, =POINT_SPACING
+    ldr r4, =WIDTH
+    lsr r4, r4, #1              // width/2 (centro da tela)
+
+    // Renderizar pontos do jogador 1
+    sub r0, r4, r3              // Pos_x = width/2 - spacing
+    ldr r2, =POINTS1            // Pega os pontos do jogador 1
+    ldr r2, [r2]
+    bl draw_number              // Desenha o numero
+
+    // Renderizar jogador 2
+    add r0, r4, r3              // Pos_x = width/2 + spacing
+    ldr r4, =SEGMENT_SIZE       
+    sub r0, r0, r4              // Pos_x = pos_x - segment_size
+    ldr r2, =POINTS2            // Carrega os pontos do jogador 2
+    ldr r2, [r2]
+    bl draw_number              // Desenha o numero
+
+    pop {r0, r1, r2, r3, r4, r5, lr}
+    mov pc, lr  
+
+
+
+
 // Função principal de renderização
 // Vai tentar renderizar um novo frame a cada final de frame swap
 // *Chamar no loop*
@@ -213,28 +245,22 @@ render:
     
     // Colocar o codigo de renderização aqui em baixo
     bl fill_background              // Limpar o frame anterior
+    bl draw_players                 // Desenha as raquetes
+    bl draw_points                  // Desenha as pontuações
+    bl draw_ball                    // Desenha a bolinha
 
-    bl draw_players
+    ldr r0, =WIDTH
+    asr r0, r0, #1                  // Width/2
+    mov r1, #0
+    ldr r3, =HEIGHT
+    mov r2, #5                      // Variação entre as coisas
+center_line_loop:
 
-    bl draw_ball
-
-    mov r0, #40
-    mov r1, #60
-    mov r2, #0b00000001
-    bl draw_number
-
-    mov r0, #60
-    mov r2, #0b00000010
-    bl draw_number
-
-    mov r0, #80
-    mov r2, #0b00000100
-    bl draw_number
-
-    mov r0, #100
-    mov r2, #0b00001000
-    bl draw_number
-
+    bl draw_linev
+    add r1, r1, r2, lsl #1                  // y = y + valor_constante
+    cmp r1, r3                      // y < height ?
+    blt center_line_loop
+center_line_exit:
     ldr r1, =DISPLAY_FRONT_BUFFER   // Troca o buffer frontal com o backbuffer
     mov r0, #1
     str r0, [r1]

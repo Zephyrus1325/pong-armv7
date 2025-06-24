@@ -18,6 +18,8 @@
 .equ HEIGHT, 240    // Altura da tela (pixels)
 .equ PADDLE_SIZE, 30        // Comprimento da raquete dos jogadores (pixels)
 .equ PADDLE_SPACING, 15     // Espaçamento dos jogadores em relação a parede (pixels)
+.equ POINT_HEIGHT, 10       // Distancia dos pontos em relação ao topo (pixels)
+.equ POINT_SPACING, 30      // Espaçamento dos pontos em relação ao centro (pixels)
 .equ PLAYER1_UP, 0x1D       // ID do botão para subir raquete do jogador 1
 .equ PLAYER1_DOWN, 0x1B     // ID do botão para descer raquete do jogador 1
 .equ PLAYER2_UP, 0x43       // ID do botão para subir raquete do jogador 2
