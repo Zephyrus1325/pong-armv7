@@ -1,4 +1,49 @@
 .text
+
+// Configura o timer para a bolinha
+// Parametro: nenhum
+// Retorno: Nenhum
+setup_ball_timer:
+    push {r0, r1, lr}
+
+    ldr r1, =BALL_TIMER_START_LOW       // Configura o byte baixo
+    ldr r0, =BALL_TIME_LOW
+    str r0, [r1]
+
+    ldr r1, =BALL_TIMER_START_HIGH      // Configura o byte alto
+    ldr r0, =BALL_TIME_HIGH
+    str r0, [r1]
+
+    mov r0, #0b0100                   // Ativa o timer
+    ldr r1, =BALL_TIMER_CONTROL
+    str r0, [r1]
+
+    pop {r0, r1, lr}
+    mov pc, lr
+
+
+// Checa o timer da bolinha
+// Parametro: nenhum
+// Retorno: 1 Se o timer estourou, 0 caso contrario
+check_ball_timer:
+    push {r1, r2, lr}
+
+    ldr r1, =BALL_TIMER_STATUS
+    ldr r0, [r1]
+    ands r0, r0, #1                       // Checa o bit de estouro
+    
+    movne r2, #0                          // Se for 1, reinicia a flag TO
+    strne r2, [r1]
+
+    mov r2, #0b0100                   // Ativa o timer
+    ldr r1, =BALL_TIMER_CONTROL
+    str r2, [r1]
+
+    pop {r1, r2, lr}
+    mov pc, lr
+
+
+
 // Leitor de teclas PS/2
 // Parametro: nenhum
 // Retorno: Tecla lida em R0
@@ -56,14 +101,14 @@ get_controls_sub1:
     cmp r2, #(5)
     subgt r2, r2, #8
     str r2, [r1]
-     b get_controls_player2
+     b get_controls_exit
 get_controls_add2:
     ldr r1, =PLAYER2_POS
     ldr r2, [r1]
     cmp r2, #(HEIGHT-PADDLE_SIZE-5)
     addlt r2, r2, #8
     str r2, [r1]
-    b get_controls_player2
+    b get_controls_exit
 get_controls_sub2:
     ldr r1, =PLAYER2_POS
     ldr r2, [r1]
@@ -95,7 +140,7 @@ restart_game:
     ldr r1, =POINTS2
     str r0, [r1]
 
-    bl reset_ball   //Codigo de inicializar a posição da bola
+    bl reset_ball       //  Codigo de inicializar a posição da bola
 
     pop {r0, r1, lr}
     mov pc, lr
@@ -110,7 +155,9 @@ game_logic:
 
     bl get_controls
 
-    bl update_ball_physics //Processa movimento da bola e colisões
+    bl check_ball_timer
+    cmp r0, #1
+    bleq update_ball_physics      // Processa movimento da bola e colisões
 
     pop {r0, r1, lr}
     mov pc, lr

@@ -4,10 +4,10 @@
 // Endereços
 .equ KEY_FIFO, 0xFF200100
 .equ KEY_LENGTH, 0xFF200102
-.equ FRAME_TIMER_STATUS, 0xFF202000
-.equ FRAME_TIMER_CONTROL, 0xFF202004
-.equ FRAME_TIMER_START_LOW, 0xFF202008
-.equ FRAME_TIMER_START_HIGH, 0xFF20200C
+.equ BALL_TIMER_STATUS, 0xFF202000
+.equ BALL_TIMER_CONTROL, 0xFF202004
+.equ BALL_TIMER_START_LOW, 0xFF202008
+.equ BALL_TIMER_START_HIGH, 0xFF20200C
 .equ DISPLAY_FRONT_BUFFER, 0xFF203020
 .equ DISPLAY_BACK_BUFFER, 0xFF203024
 .equ DISPLAY_STATUS, 0xFF20302C
@@ -26,8 +26,8 @@
 .equ PLAYER2_DOWN, 0x42     // ID do botão para descer raquete do jogador 2
 .equ COLOR_BLACK, 0x0000    // Preto
 .equ COLOR_WHITE, 0xFFFF    // Branco
-.equ FRAME_TIME_LOW, 0x4B40
-.equ FRAME_TIME_HIGH, 0x004C
+.equ BALL_TIME_LOW, 0x4240
+.equ BALL_TIME_HIGH, 0x0001
 .equ SEGMENT_SIZE, 10       // tamanho de cada segmento dos numeros
 
 // Valores de segmentos para mostrar a pontuação
@@ -61,3 +61,5 @@ BALL_DY: .word 0         // Velocidade Y da bola
 
 PIXEL_BUFFER_A: .skip 320*240*2 // Buffer de pixels 1
 PIXEL_BUFFER_B: .skip 320*240*2 // Buffer de pixels 2
+
+

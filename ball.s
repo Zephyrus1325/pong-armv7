@@ -17,7 +17,7 @@ reset_ball:
     
     // Bola fica com velocidade inicial "default" (pra direita e pra baixo)
     //(se achar uma forma, fazer isso ficar aleatório pra ficar menos similar os jogos :D)
-    ldr r0, =1
+    mov r0, #1
     ldr r1, = BALL_DX
     str r0, [r1]
     ldr r1, = BALL_DY
@@ -163,3 +163,5 @@ update_position:
 update_ball_exit:
     pop {r0, r1, r2, r3, r4, r5, r6, r7, lr}
     mov pc, lr
+
+
