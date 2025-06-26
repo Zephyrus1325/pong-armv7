@@ -26,8 +26,8 @@
 .equ PLAYER2_DOWN, 0x42     // ID do botão para descer raquete do jogador 2
 .equ COLOR_BLACK, 0x0000    // Preto
 .equ COLOR_WHITE, 0xFFFF    // Branco
-.equ BALL_TIME_LOW, 0x4240
-.equ BALL_TIME_HIGH, 0x0001
+.equ BALL_TIME_LOW, 0x4B40
+.equ BALL_TIME_HIGH, 0x004C
 .equ SEGMENT_SIZE, 10       // tamanho de cada segmento dos numeros
 
 // Valores de segmentos para mostrar a pontuação

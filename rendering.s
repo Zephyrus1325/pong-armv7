@@ -138,28 +138,28 @@ draw_lineh_exit:
 // Parametro: Nenhum
 // Retorno: Nenhum
 fill_background:
-    push {r0, r1, r2, r3, r4, r5, lr}
+    push {r0, r1, r2, r3, r4, r5, r6, lr}
+    mov r0, #0                      // x = 0
+    mov r1, #0                      // y = 0
     ldr r2, =WIDTH                  // Carrega a largura da tela
     ldr r3, =HEIGHT                 // Carrega a altura da tela
     ldr r4, =COLOR_BLACK            // Carrega a cor preta
-    mov r1, #0                      // X = 0
+    ldr r6, =DISPLAY_BACK_BUFFER    // Recarrega o ponteiro do buffer de pixels
+    ldr r6, [r6]
+    lsl r2, r2, #1                  // width * 2 (2 bytes / pixel)
 fill_background_loop_line:
-    mov r0, #0                      // Y = 0
+    mov r5, r6                      // addr = display_base
+    add r5, r5, r1, LSL #10         // addr += y << 1
+    mov r0, #0                      // x = 0
 fill_background_loop:
-    ldr r5, =DISPLAY_BACK_BUFFER    // Recarrega o ponteiro do buffer de pixels
-    ldr r5, [r5]
-    add r5, r5, r0, LSL #1          // Calcula o endereço do pixel
-    add r5, r5, r1, LSL #10
-    strh r4, [r5]                   // Escreve o valor
-
-    add r0, r0, #1                  // x = x + 1
-    cmp r0, r2                      // x = width ?
-    bne fill_background_loop        // Se não, continua loop
-    add r1, r1, #1                  // caso contrario, y = y + 1
-    cmp r1, r3                      // y = height ?
-    bne fill_background_loop_line   // Se não, continua loop
-                                    // caso contrário, sai do loop
-    pop {r0, r1, r2, r3, r4, r5, lr}
+    str r4, [r5, r0]                
+    add r0, r0, #4
+    cmp r0, r2
+    bne fill_background_loop
+    add r1, r1, #1
+    cmp r1, r3
+    bne fill_background_loop_line
+    pop {r0, r1, r2, r3, r4, r5, r6, lr}
     mov pc, lr
 
 // Função que desenha uma raquete
