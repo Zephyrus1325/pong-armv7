@@ -97,6 +97,7 @@ draw_number_exit:
 
 
 
+// TODO: Otimizar essa função para não necessitar de ter o overhead de chamar draw_pixel toda vez
 
 // Desenha uma linha na vertical uma determinada distancia
 // Parametro: R0 - X | R1 - Y | R2 - comprimento
@@ -116,6 +117,7 @@ draw_linev_exit:
 
 
 
+// TODO: Otimizar essa função para não necessitar de ter o overhead de chamar draw_pixel toda vez
 
 // Desenha uma linha na horizontal uma determinada distancia
 // Parametro: R0 - X | R1 - Y | R2 - comprimento

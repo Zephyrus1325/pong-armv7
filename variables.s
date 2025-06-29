@@ -11,6 +11,10 @@
 .equ DISPLAY_FRONT_BUFFER, 0xFF203020
 .equ DISPLAY_BACK_BUFFER, 0xFF203024
 .equ DISPLAY_STATUS, 0xFF20302C
+.equ AUDIO_CONTROL, 0xFF203040
+.equ AUDIO_FIFOSPACE, 0xFF203044
+.equ AUDIO_LEFT, 0xFF203048
+.equ AUDIO_RIGHT, 0xFF20303C
 
 
 // Valores
@@ -29,6 +33,7 @@
 .equ BALL_TIME_LOW, 0x4B40
 .equ BALL_TIME_HIGH, 0x004C
 .equ SEGMENT_SIZE, 10       // tamanho de cada segmento dos numeros
+.equ SAMPLE_RATE, 48000     // Taxa de amostragem do hardware de audio
 
 // Valores de segmentos para mostrar a pontuação
 SEG_DECODE:

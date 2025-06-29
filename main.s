@@ -12,6 +12,7 @@ main_loop:
 
     b main_loop
 
+.include "sound.s"
 .include "ball.s"
 .include "game_control.s"
 .include "rendering.s"
