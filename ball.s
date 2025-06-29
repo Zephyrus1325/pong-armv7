@@ -44,7 +44,7 @@ draw_ball:
 // Parametro: Nenhum
 // Return: Nenhum
 update_ball_physics:
-    push {r0, r1, r2, r3, r4, r5, r6, r7, lr}   //Meu deus do ceu tentar achar uma forma de usar menos registradores
+    push {r0, r1, r2, r3, r4, r5, r6, r7, r8, lr}   //Meu deus do ceu tentar achar uma forma de usar menos registradores
     
     // Carregar posição da bola atual
     ldr r0, = BALL_X
@@ -121,30 +121,55 @@ check_paddle_right:
     neg r2, r2             // Inverte direção x
 
 check_scoring:
+    // Verifica se alguém já ganhou antes de dar o ponto
+    ldr r8, =RESTART_FLAG
+    ldr r8, [r8]
+    cmp r8, #0
+    bne update_ball_exit  // Se jogo terminou, não processa ponto
+    
     // Checa pontuação do player 2
     cmp r1, #0
     bge check_right_scoring
     
-    // Quando player 1 pontua
+    // Player 2 pontua
     ldr r6, =POINTS2
     ldr r7, [r6]
     add r7, r7, #1
     str r7, [r6]
+    
+    // Verifica se player 2 ganhou (>=10 pontos)
+    cmp r7, #10
+    bge set_player2_wins
     bl reset_ball
     b update_ball_exit
 
 check_right_scoring:
-    // Checa pontuação do player 1
     ldr r6, =WIDTH
     cmp r1, r6
     blt update_position
     
-    // Quando player 1 pontua
+    // Player 1 pontua
     ldr r6, =POINTS1
     ldr r7, [r6]
     add r7, r7, #1
     str r7, [r6]
+    
+    // Verifica se player 1 ganhou (>=10 pontos)
+    cmp r7, #10
+    bge set_player1_wins
     bl reset_ball
+    b update_ball_exit
+
+set_player1_wins:
+    ldr r6, =RESTART_FLAG
+    mov r7, #1
+    str r7, [r6]
+    b update_ball_exit
+
+set_player2_wins:
+    ldr r6, =RESTART_FLAG
+    mov r7, #2
+    str r7, [r6]
     b update_ball_exit
 
 update_position:
@@ -161,7 +186,7 @@ update_position:
     str r5, [r0]
 
 update_ball_exit:
-    pop {r0, r1, r2, r3, r4, r5, r6, r7, lr}
+    pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, lr}
     mov pc, lr
 
 
