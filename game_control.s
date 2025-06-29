@@ -71,20 +71,15 @@ read_key_exit:
 // Deus me perdoe por ter feito tais males para a humanidade
 get_controls:
     push {r0, r1, r2, lr}
-
     bl read_key
-    ldr r1, =PLAYER1_UP
-    cmp r0, r1
+    cmp r0, #PLAYER1_UP
     beq get_controls_sub1
-    ldr r1, =PLAYER1_DOWN
-    cmp r0, r1
+    cmp r0, #PLAYER1_DOWN
     beq get_controls_add1
 get_controls_player2:
-    ldr r1, =PLAYER2_UP
-    cmp r0, r1
+    cmp r0, #PLAYER2_UP
     beq get_controls_sub2
-    ldr r1, =PLAYER2_DOWN
-    cmp r0, r1
+    cmp r0, #PLAYER2_DOWN
     beq get_controls_add2
     b get_controls_exit
 
@@ -92,28 +87,28 @@ get_controls_add1:
     ldr r1, =PLAYER1_POS
     ldr r2, [r1]
     cmp r2, #(HEIGHT-PADDLE_SIZE-5)
-    addlt r2, r2, #8
+    addlt r2, r2, #MOVE_INCREMENT
     str r2, [r1]
     b get_controls_player2
 get_controls_sub1:
     ldr r1, =PLAYER1_POS
     ldr r2, [r1]
     cmp r2, #(5)
-    subgt r2, r2, #8
+    subgt r2, r2, #MOVE_INCREMENT
     str r2, [r1]
      b get_controls_exit
 get_controls_add2:
     ldr r1, =PLAYER2_POS
     ldr r2, [r1]
     cmp r2, #(HEIGHT-PADDLE_SIZE-5)
-    addlt r2, r2, #8
+    addlt r2, r2, #MOVE_INCREMENT
     str r2, [r1]
     b get_controls_exit
 get_controls_sub2:
     ldr r1, =PLAYER2_POS
     ldr r2, [r1]
     cmp r2, #5
-    subgt r2, r2, #8
+    subgt r2, r2, #MOVE_INCREMENT
     str r2, [r1]
 
 get_controls_exit:
@@ -145,6 +140,28 @@ restart_game:
     pop {r0, r1, lr}
     mov pc, lr
 
+
+// Espera até o jogador selecionar 1 ou 2
+// *Colocar no setup*
+// Parametro: nenhum
+// Retorno: Nenhum
+wait_for_mode_selection:
+    push {r0, r1, r2, r3, lr}
+    mov r1, #0x16               // Input 1
+    mov r2, #0x1E               // Input 2
+    ldr r3, =GAME_MODE          // Pointer para variavel do modo de jogo
+wait_for_mode_loop:
+    bl read_key                 // Le a tecla do jogador
+    cmp r0, r1                  // Compara se é o numero 1
+    moveq r0, #0                // Escreve para o modo 0
+    beq wait_for_mode_exit      // Sai do loop
+    cmp r0, r2                  // Compara se é o numero 2
+    moveq r0, #1                // Escreve para o modo 1
+    bne wait_for_mode_loop      // Se não for nenhum dos dois modos, continua no loop
+wait_for_mode_exit:   
+    str r0, [r3]
+    pop {r0, r1, r2, r3, lr}
+    mov pc, lr
 
 // Roda toda a logica de jogo
 // *Colocar no loop*
