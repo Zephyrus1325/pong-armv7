@@ -11,6 +11,7 @@
 .equ DISPLAY_FRONT_BUFFER, 0xFF203020
 .equ DISPLAY_BACK_BUFFER, 0xFF203024
 .equ DISPLAY_STATUS, 0xFF20302C
+.equ CHAR_BUFFER, 0xC9000000
 .equ AUDIO_CONTROL, 0xFF203040
 .equ AUDIO_FIFOSPACE, 0xFF203044
 .equ AUDIO_LEFT, 0xFF203048
@@ -28,6 +29,7 @@
 .equ PLAYER1_DOWN, 0x1B     // ID do botão para descer raquete do jogador 1
 .equ PLAYER2_UP, 0x43       // ID do botão para subir raquete do jogador 2
 .equ PLAYER2_DOWN, 0x42     // ID do botão para descer raquete do jogador 2
+.equ MOVE_INCREMENT, 8      // Quantos pixels cada player se move por vez
 .equ COLOR_BLACK, 0x0000    // Preto
 .equ COLOR_WHITE, 0xFFFF    // Branco
 .equ BALL_TIME_LOW, 0x4B40
@@ -35,6 +37,23 @@
 .equ SEGMENT_SIZE, 10       // tamanho de cada segmento dos numeros
 .equ SAMPLE_RATE, 48000     // Taxa de amostragem do hardware de audio
 
+TEXT_TITLE:
+.ascii "PONG"
+.byte 0
+TEXT_PLAY1:
+.ascii "Aperte 1 para jogar com um jogador"
+.byte 0
+TEXT_PLAY2:
+.ascii "Aperte 2 para jogar com dois jogadores"
+.byte 0
+TEXT_AUTHORS:
+.ascii "Feito por: Bernardo e Marco Aurelio"
+.byte 0
+TEXT_COPYRIGHT:
+.ascii "ACSE IFES 2025"
+.byte 0
+
+.align 2
 // Valores de segmentos para mostrar a pontuação
 SEG_DECODE:
 .byte 0b00111111 // 0
@@ -64,6 +83,7 @@ BALL_Y: .word 0          // Posição Y da bola
 BALL_DX: .word 0         // Velocidade X da bola
 BALL_DY: .word 0         // Velocidade Y da bola
 RESTART_FLAG: .word  0      //Quando passar de 9 pontos, reiniciar; 1-jogador
+GAME_MODE: .word 0        // Modo de jogo (0 para 1 jogador, e 1 para 2 jogadores)
 
 PIXEL_BUFFER_A: .skip 320*240*2 // Buffer de pixels 1
 PIXEL_BUFFER_B: .skip 320*240*2 // Buffer de pixels 2

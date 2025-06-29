@@ -37,6 +37,82 @@ draw_pixel:
     pop {r0, r1, r2, r3, lr}
     mov pc, lr
 
+
+// Escritor de pixel
+// Escreve um texto com null terminator na tela
+// Parametro: R0 - X | R1 - Y | R2 - text_pointer
+// Retorno: Nenhum
+write_text:
+    push {r0, r1, r2, r3, lr}
+    ldr r3, =CHAR_BUFFER            // Carrega o endereço do buffer
+    add r3, r0                      // Soma para a posição X
+    add r3, r1, LSL #7              // Soma para a posição Y
+    mov r1, #0                      // Define o contador de caracteres para 0
+write_text_loop:
+    ldrb r0, [r2, r1]                // Carrega o caracter
+    cmp r0, #0                      // Checa se é 0
+    beq write_text_exit             // Se for 0, sai do loop    
+    strb r0, [r3, r1]                // Caso contrario, escreve o caracter
+    add r1, r1, #1                  // Soma 1 para o contador
+    b write_text_loop               // Repete
+write_text_exit:
+    pop {r0, r1, r2, r3, lr}
+    mov pc, lr
+
+write_texts:
+    push {r0, r1, r2, lr}
+    mov r0, #38
+    mov r1, #10
+    ldr r2, =TEXT_TITLE
+    bl write_text
+
+    mov r0, #24
+    mov r1, #27
+    ldr r2, =TEXT_PLAY1
+    bl write_text
+
+    mov r0, #22
+    mov r1, #29
+    ldr r2, =TEXT_PLAY2
+    bl write_text
+
+
+    mov r0, #2
+    mov r1, #58
+    ldr r2, =TEXT_AUTHORS
+    bl write_text
+
+    mov r0, #63
+    ldr r2, =TEXT_COPYRIGHT
+    bl write_text
+
+    pop {r0, r1, r2, lr}
+    mov pc, lr
+
+
+// Apaga todo texto escrito na tela
+// Parametro: Nenhum
+// Retorno: Nenhum
+clear_text:
+    push {r0, r1, r2, r3, lr}
+    ldr r0, =CHAR_BUFFER
+    mov r3, #0                      // Usa r3 pra zerar os valores
+    mov r2, #0                      // Zera o contador de linhas
+clear_text_loop_line:
+    mov r1, #0                      // Zera o contador do eixo X
+clear_text_loop:
+    str r3, [r0, r1]                    // Escreve 4 characteres por vez
+    add r1, r1, #4
+    cmp r1, #80
+    bne clear_text_loop
+    add r0, r0, #128
+    add r2, r2, #1
+    cmp r2, #60
+    bne clear_text_loop_line
+    pop {r0, r1, r2, r3, lr}
+    mov pc, lr
+
+
 // Escritor de numero
 // Parametro: R0 - X | R1 - Y | R2 - Numero
 // Retorno: Nenhum
