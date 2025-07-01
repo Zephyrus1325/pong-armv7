@@ -1,30 +1,62 @@
 .text
 
-// Reseta bola pro centro com velocidade regular
+// Reseta bola pro centro
 // Parametros: Nenhum
 // Return: Nenhum
 reset_ball:
-    push {r0, r1, lr}
+    push {r0, r1, r2, r3, lr}
+
+    bl randomize_direction      // r0 = numero aleatorio
+    mov r3, r0                  // salva o numero em r3
+
     // Coloca bola no centro
-    ldr r0, = WIDTH
-    lsr r0, r0, #1          // R0 = WIDTH/2
-    ldr r1, = BALL_X
+    ldr r0, =WIDTH
+    lsr r0, r0, #1
+    ldr r1, =BALL_X
     str r0, [r1]
-    ldr r0, = HEIGHT
-    lsr r0, r0, #1          // r0 = HEIGHT/2
-    ldr r1, = BALL_Y
+    ldr r0, =HEIGHT
+    lsr r0, r0, #1
+    ldr r1, =BALL_Y
     str r0, [r1]
+
+    // Aplica as velocidades aleatorias
+    and r0, r3, #1          // isola o bit de dx em r0
+    lsl r0, r0, #1          // transforma o bit em 0 ou 2
+    sub r0, r0, #1          // dx = -1 ou 1, pois fica: (2 ou 0) - 1
+
+    and r1, r3, #2          // isola o bit de dy em r1
+    sub r1, r1, #1          // dy = -1 ou 1
+
+    ldr r2, =BALL_DX
+    str r0, [r2]
+    ldr r2, =BALL_DY
+    str r1, [r2]
     
-    // Bola fica com velocidade inicial "default" (pra direita e pra baixo)
-    //(se achar uma forma, fazer isso ficar aleatório pra ficar menos similar os jogos :D)
-    mov r0, #1
-    ldr r1, = BALL_DX
-    str r0, [r1]
-    ldr r1, = BALL_DY
-    str r0, [r1]
-    
-    pop {r0, r1, lr}
+    pop {r0, r1, r2, r3, lr}
     mov pc, lr
+
+// Gera a direcao aleatoria para a bola
+// Parametro: Nenhum
+// Return: r0: Valor aleatorio para reset_ball
+randomize_direction:
+    push {r1, r2, r3, lr}
+
+    ldr r0, =RANDOM_ADDRESS  // Endereco
+    ldr r1, [r0]            // Carrega valor do endereco (nao o endereco em si, burro)
+    
+    // Modifica o valor pra ser pseudo-aleatorio
+    add r1, r1, #0x69
+    ror r1, r1, #5
+    add r1, r1, r1, lsl #1
+    str r1, [r0]            // Guarda valor modificado
+    
+    // Soma 4 ao valor do endereco pra evitar de repetir a mesma direcao
+    ldr r2, [r0]            // Carrega valor
+    add r2, r2, #4
+    str r2, [r0]
+    
+    mov r0, r1              // Return random value
+    pop {r1, r2, r3, lr}
 
 // Desenha a bola no (BALL_X,BALL_Y)
 // Parametro: Nenhum
@@ -32,10 +64,10 @@ reset_ball:
 draw_ball:
     push {r0, r1, lr}
     ldr r0, = BALL_X
-    ldr r0, [r0]    // r0 = Posição x
+    ldr r0, [r0]            // r0 = Posição x
     ldr r1, = BALL_Y
-    ldr r1, [r1]    // r1 = Posição y
-    bl draw_pixel   // Usa a função draw_pixel (x, y, color)
+    ldr r1, [r1]            // r1 = Posição y
+    bl draw_pixel           // Usa a função draw_pixel (x, y)
     pop {r0, r1, lr}
     mov pc, lr
 
@@ -92,10 +124,10 @@ check_paddle_left:
     blt check_paddle_right
     add r7, r7, #PADDLE_SIZE
     cmp r4, r7
-    bgt check_paddle_right  //Se colisão com a raquete
+    bgt check_paddle_right //Se colisão com a raquete
     
     neg r2, r2             // Inverte direção x
-    b check_scoring //Se não, player 1 pontua
+    b check_scoring        //Se não, player 1 pontua
 
 check_paddle_right:
     // Checa se a bola ta se movendo pra direita na raquede do player 2
