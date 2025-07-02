@@ -8,6 +8,10 @@
 .equ BALL_TIMER_CONTROL, 0xFF202004
 .equ BALL_TIMER_START_LOW, 0xFF202008
 .equ BALL_TIMER_START_HIGH, 0xFF20200C
+.equ AI_TIMER_STATUS, 0xFF202020
+.equ AI_TIMER_CONTROL, 0xFF202024
+.equ AI_TIMER_START_LOW, 0xFF202028
+.equ AI_TIMER_START_HIGH, 0xFF20202C
 .equ DISPLAY_FRONT_BUFFER, 0xFF203020
 .equ DISPLAY_BACK_BUFFER, 0xFF203024
 .equ DISPLAY_STATUS, 0xFF20302C
@@ -34,6 +38,8 @@
 .equ COLOR_WHITE, 0xFFFF    // Branco
 .equ BALL_TIME_LOW, 0x4B40
 .equ BALL_TIME_HIGH, 0x004C
+.equ AI_TIME_LOW, 0xF080       
+.equ AI_TIME_HIGH, 0x008A
 .equ SEGMENT_SIZE, 10       // tamanho de cada segmento dos numeros
 .equ SAMPLE_RATE, 48000     // Taxa de amostragem do hardware de audio
 
@@ -82,10 +88,10 @@ BALL_X: .word 0          // Posição X da bola
 BALL_Y: .word 0          // Posição Y da bola
 BALL_DX: .word 0         // Velocidade X da bola
 BALL_DY: .word 0         // Velocidade Y da bola
-RESTART_FLAG: .word  0      //Quando passar de 9 pontos, reiniciar; 1-jogador
 GAME_MODE: .word 0        // Modo de jogo (0 para 1 jogador, e 1 para 2 jogadores)
+RESTART_FLAG: .word 0
 
-PIXEL_BUFFER_A: .skip 320*240*2 // Buffer de pixels 1
-PIXEL_BUFFER_B: .skip 320*240*2 // Buffer de pixels 2
+PIXEL_BUFFER_A: .skip 320*240*4 // Buffer de pixels 1
+PIXEL_BUFFER_B: .skip 320*240*4 // Buffer de pixels 2
 
 

@@ -66,6 +66,7 @@ update_ball_physics:
     bgt check_bottom_wall
     mov r4, #0             // Impede de ultrapassar o teto
     neg r5, r5             // Inverte direção y
+    bl play_hit_fx         // Toca um som de colisão
     b check_paddle_left
 
 check_bottom_wall:
@@ -75,7 +76,7 @@ check_bottom_wall:
     blt check_paddle_left
     mov r4, r6             // Impede de ultrapassar o chão
     neg r5, r5             // Inverte direção y
-
+    bl play_hit_fx         // Toca um som de colisão
 check_paddle_left:
     // Checa se a bola ta se movendo pra esquerda na raquete do player 1
     cmp r2, #0
@@ -95,6 +96,7 @@ check_paddle_left:
     bgt check_paddle_right  //Se colisão com a raquete
     
     neg r2, r2             // Inverte direção x
+    bl play_hit_fx         // Toca um som de colisão
     b check_scoring //Se não, player 1 pontua
 
 check_paddle_right:
@@ -119,7 +121,7 @@ check_paddle_right:
     
     // Colisão com raquete direita
     neg r2, r2             // Inverte direção x
-
+    bl play_hit_fx         // Toca um som de colisão
 check_scoring:
     // Verifica se alguém já ganhou antes de dar o ponto
     ldr r8, =RESTART_FLAG
@@ -137,6 +139,8 @@ check_scoring:
     add r7, r7, #1
     str r7, [r6]
     
+    bl play_point_fx                // Toca um som de pontuação
+
     // Verifica se player 2 ganhou (>=10 pontos)
     cmp r7, #10
     bge set_player2_wins
@@ -154,6 +158,8 @@ check_right_scoring:
     add r7, r7, #1
     str r7, [r6]
     
+    bl play_point_fx                // Toca um som de pontuação
+
     // Verifica se player 1 ganhou (>=10 pontos)
     cmp r7, #10
     bge set_player1_wins

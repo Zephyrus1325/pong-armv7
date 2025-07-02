@@ -22,6 +22,27 @@ setup_ball_timer:
     mov pc, lr
 
 
+// Configura o timer para a ia
+// Parametro: nenhum
+// Retorno: Nenhum
+setup_ai_timer:
+    push {r0, r1, lr}
+
+    ldr r1, =AI_TIMER_START_LOW       // Configura o byte baixo
+    ldr r0, =AI_TIME_LOW
+    str r0, [r1]
+
+    ldr r1, =AI_TIMER_START_HIGH      // Configura o byte alto
+    ldr r0, =AI_TIME_HIGH
+    str r0, [r1]
+
+    mov r0, #0b0100                   // Ativa o timer
+    ldr r1, =AI_TIMER_CONTROL
+    str r0, [r1]
+
+    pop {r0, r1, lr}
+    mov pc, lr
+
 // Checa o timer da bolinha
 // Parametro: nenhum
 // Retorno: 1 Se o timer estourou, 0 caso contrario
@@ -37,6 +58,26 @@ check_ball_timer:
 
     mov r2, #0b0100                   // Ativa o timer
     ldr r1, =BALL_TIMER_CONTROL
+    str r2, [r1]
+
+    pop {r1, r2, lr}
+    mov pc, lr
+
+// Checa o timer da ia
+// Parametro: nenhum
+// Retorno: 1 Se o timer estourou, 0 caso contrario
+check_ai_timer:
+    push {r1, r2, lr}
+
+    ldr r1, =AI_TIMER_STATUS
+    ldr r0, [r1]
+    ands r0, r0, #1                       // Checa o bit de estouro
+    
+    movne r2, #0                          // Se for 1, reinicia a flag TO
+    strne r2, [r1]
+
+    mov r2, #0b0100                   // Ativa o timer
+    ldr r1, =AI_TIMER_CONTROL
     str r2, [r1]
 
     pop {r1, r2, lr}
@@ -76,6 +117,11 @@ get_controls:
     beq get_controls_sub1
     cmp r0, #PLAYER1_DOWN
     beq get_controls_add1
+    ldr r1, =GAME_MODE          // Checa o modo de jogo
+    ldr r2, [r1]
+    cmp r2, #0                  // Se for modo 1 jogador, ignora o teste de jogador
+    bleq update_ai
+    beq get_controls_exit
 get_controls_player2:
     cmp r0, #PLAYER2_UP
     beq get_controls_sub2
@@ -89,7 +135,7 @@ get_controls_add1:
     cmp r2, #(HEIGHT-PADDLE_SIZE-5)
     addlt r2, r2, #MOVE_INCREMENT
     str r2, [r1]
-    b get_controls_player2
+    b get_controls_exit
 get_controls_sub1:
     ldr r1, =PLAYER1_POS
     ldr r2, [r1]
@@ -115,6 +161,34 @@ get_controls_exit:
     pop {r0, r1, r2, lr}
     mov pc, lr
 
+// Atualiza a IA do jogador 2, caso esteja 
+// Parametro: nenhum
+// Retorno: Nenhum
+update_ai:
+    push {r0, r1, r2, r3, r4, r5, lr}
+    bl check_ai_timer
+    cmp r0, #0
+    beq update_ai_exit
+    ldr r2, =PLAYER2_POS
+    ldr r3, =BALL_Y
+    ldr r0, [r2]                // Pos player 2
+    ldr r1, [r3]                // Pos Y bolinha
+    add r3, r0, #PADDLE_SIZE/2
+    sub r3, r3, r1              // Paddle_center - ball_y
+    mov r1, #MOVE_INCREMENT    
+    cmp r3, #0
+    bgt update_ai_decrement
+    cmp r0, #(HEIGHT-PADDLE_SIZE-5)
+    addlt r0, r0, #1
+    str r0, [r2]
+    b update_ai_exit
+update_ai_decrement:
+    cmp r0, #(5)
+    subgt r0, r0, #1
+    str r0, [r2]
+update_ai_exit:  
+    pop {r0, r1, r2, r3, r4, r5, lr}
+    mov pc, lr
 
 // Coloca o jogo em um estado inicial padrão
 // Parametro: nenhum
@@ -133,6 +207,8 @@ restart_game:
     ldr r1, =POINTS1
     str r0, [r1]
     ldr r1, =POINTS2
+    str r0, [r1]
+    ldr r1, =RESTART_FLAG   // Zera a flag de restart
     str r0, [r1]
 
     bl reset_ball       //  Codigo de inicializar a posição da bola
@@ -174,7 +250,7 @@ game_logic:
 
     bl check_ball_timer
     cmp r0, #1
-    bleq update_ball_physics      // Processa movimento da bola e colisões
+    bleq update_ball_physics        // Processa movimento da bola e colisões
 
     pop {r0, r1, lr}
     mov pc, lr

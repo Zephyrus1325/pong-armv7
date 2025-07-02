@@ -27,3 +27,33 @@ play_tone_loop:
 play_tone_exit:
     pop {r0, r1, r2, r3, r4, lr}
     mov pc, lr
+
+
+
+// Toca um uma onda quadrada a um tempo e frequencia determinada, para cada vez que a bolinha vier a bater em algo
+// Parametro: Nenhum
+// Retorno: Nenhum
+play_hit_fx:
+    push {r0, r1, lr}
+    ldr r0, =#100
+    ldr r1, =#2000
+    bl play_tone
+    pop {r0, r1, lr}
+    mov pc, lr
+
+
+// Toca um uma onda quadrada a um tempo e frequencia determinada, para cada vez que alguem pontuar
+// Parametro: Nenhum
+// Retorno: Nenhum
+play_point_fx:
+    push {r0, r1, lr}
+    ldr r0, =#100
+    ldr r1, =#4000
+    bl play_tone
+    ldr r0, =#50
+    ldr r1, =#4000
+    bl play_tone
+    pop {r0, r1, lr}
+    mov pc, lr
+
+
