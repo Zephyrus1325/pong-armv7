@@ -53,7 +53,7 @@ TEXT_PLAY2:
 .ascii "Aperte 2 para jogar com dois jogadores"
 .byte 0
 TEXT_AUTHORS:
-.ascii "Feito por: Bernardo e Marco Aurelio"
+.ascii "Feito por: Bernardo Ferri e Marco Aurelio"
 .byte 0
 TEXT_COPYRIGHT:
 .ascii "ACSE IFES 2025"
@@ -90,6 +90,7 @@ BALL_DX: .word 0         // Velocidade X da bola
 BALL_DY: .word 0         // Velocidade Y da bola
 GAME_MODE: .word 0        // Modo de jogo (0 para 1 jogador, e 1 para 2 jogadores)
 RESTART_FLAG: .word 0
+RANDOM_ADDRESS: .word 0x327083FB    //Endereco qualquer pra a aleatoriedade de comeco da bola
 
 PIXEL_BUFFER_A: .skip 320*240*4 // Buffer de pixels 1
 PIXEL_BUFFER_B: .skip 320*240*4 // Buffer de pixels 2

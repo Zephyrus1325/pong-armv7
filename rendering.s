@@ -220,58 +220,6 @@ draw_lineh_exit:
     mov pc, lr
 
 
-
-// Limpa os elementos moveis da tela (Obrigado cpulator por ser lento)
-// Parametro: Nenhum
-// Retorno: Nenhum
-clear_frame:
-    push {r0, r1, r2, r3, r4, r5, r6, lr}
-    ldr r0, =COLOR_BLACK                    // Carrega a cor preta
-    mov r1, #0                              // Carrega um contador
-    ldr r2, =HEIGHT                         // Carrega a altura da tela
-    ldr r3, =DISPLAY_BACK_BUFFER            // Carrega o endereço do pointer para o backbuffer
-    ldr r3, [r3]                            // Carrega o endereço do backbuffer
-    ldr r4, =PADDLE_SPACING                 // Carrega o valor em X da raquete 1
-    add r4, r3, r4, LSL #1                  // Carrega em r4 o endereço com posição X da raquete 1
-clear_frame_player1_loop:
-    add r4, r4, #1024
-    strh r0, [r4]                           // Limpa o pixel na posição Y desejada               
-    add r1, r1, #1                          // Soma um para o contador
-    cmp r1, r2                              // Checa se já é igual a altura da tela
-    bne clear_frame_player1_loop
-
-    ldr r1, =WIDTH                          // Usa o r1 temporariamente como width
-    ldr r4, =PADDLE_SPACING
-    sub r4, r1, r4
-    add r4, r3, r4, LSL #1                  // Carrega o valor da posição X da raquete 2
-    mov r1, #0                              // Zera o contador
-clear_frame_player2_loop:
-    add r4, r4, #1024
-    strh r0, [r4]                           // Limpa o pixel na posição Y desejada               
-    add r1, r1, #1                          // Soma um para o contador
-    cmp r1, r2                              // Checa se já é igual a altura da tela
-    bne clear_frame_player2_loop
-
-clear_frame_ball:
-    ldr r1, =BALL_X
-    ldr r1, [r1]
-    ldr r2, =BALL_DX
-    ldr r2, [r2]
-    sub r1, r1, r2, LSL #2
-    ldr r2, =BALL_Y
-    ldr r2, [r2]
-    ldr r4, =BALL_DY
-    ldr r4, [r4]
-    sub r2, r2, r4, LSL #2
-    add r1, r3, r1, LSL #1
-    add r1, r1, r2, LSL #10
-    strh r0, [r1]
-
-    pop {r0, r1, r2, r3, r4, r5, r6, lr}
-    mov pc, lr
-
-
-
 // Preenche o fundo com preto
 // Parametro: Nenhum
 // Retorno: Nenhum
