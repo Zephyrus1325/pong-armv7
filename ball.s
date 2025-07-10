@@ -226,5 +226,4 @@ update_position:
 update_ball_exit:
     pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, lr}
     mov pc, lr
-
-
+    
