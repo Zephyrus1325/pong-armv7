@@ -1,3 +1,9 @@
+// sound.s
+// Arquivo responsável por gerar todo o audio do jogo
+// Autores:
+// Bernardo Ferri Schirmer
+// Marco Aurélio Tiago Filho
+
 .text
 // Note to self: Eventualmente permitir multiplos canais de audio e varios tipos de onda
 

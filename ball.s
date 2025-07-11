@@ -1,3 +1,9 @@
+// ball.s
+// Arquivo responsável por coordenar os movimentos da bolinha
+// Autores:
+// Bernardo Ferri Schirmer
+// Marco Aurélio Tiago Filho
+
 .text
 
 // Reseta bola pro centro
@@ -57,19 +63,7 @@ randomize_direction:
     
     mov r0, r1              // Return random value
     pop {r1, r2, r3, lr}
-
-// Desenha a bola no (BALL_X,BALL_Y)
-// Parametro: Nenhum
-// Return: Nenhum
-draw_ball:
-    push {r0, r1, lr}
-    ldr r0, = BALL_X
-    ldr r0, [r0]            // r0 = Posição x
-    ldr r1, = BALL_Y
-    ldr r1, [r1]            // r1 = Posição y
-    bl draw_pixel           // Usa a função draw_pixel (x, y)
-    pop {r0, r1, lr}
-    mov pc, lr
+    
 
 // Atualiza posição da bola e faz check de colisão
 // Usado no game_logic

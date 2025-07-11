@@ -1,3 +1,9 @@
+// game_control.s
+// Arquivo responsável por coordenar todas as ações principais de jogo (reset, movimento de jogadores, etc)
+// Autores:
+// Bernardo Ferri Schirmer
+// Marco Aurélio Tiago Filho
+
 .text
 
 // Configura o timer para a bolinha

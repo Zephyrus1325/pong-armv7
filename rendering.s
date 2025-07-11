@@ -1,3 +1,9 @@
+// rendering.s
+// Arquivo responsável por coordenar todas as ações relativas a visualização do jogo
+// Autores:
+// Bernardo Ferri Schirmer
+// Marco Aurélio Tiago Filho
+
 .text
 
 // Configura o display com o double buffering
@@ -246,6 +252,19 @@ fill_background_loop:
     cmp r1, r3
     bne fill_background_loop_line
     pop {r0, r1, r2, r3, r4, r5, r6, lr}
+    mov pc, lr
+
+// Desenha a bola no (BALL_X,BALL_Y)
+// Parametro: Nenhum
+// Return: Nenhum
+draw_ball:
+    push {r0, r1, lr}
+    ldr r0, = BALL_X
+    ldr r0, [r0]            // r0 = Posição x
+    ldr r1, = BALL_Y
+    ldr r1, [r1]            // r1 = Posição y
+    bl draw_pixel           // Usa a função draw_pixel (x, y)
+    pop {r0, r1, lr}
     mov pc, lr
 
 // Função que desenha uma raquete

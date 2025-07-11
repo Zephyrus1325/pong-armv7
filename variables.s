@@ -1,3 +1,9 @@
+// variables.s
+// Arquivo contendo todas as variáveis do jogo
+// Autores:
+// Bernardo Ferri Schirmer
+// Marco Aurélio Tiago Filho
+
 .data   // Região de dados do código
 
 // defina aqui constantes

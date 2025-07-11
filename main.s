@@ -1,3 +1,9 @@
+// main.s
+// Arquivo principal, contém o fluxo geral do jogo (renderização e logica de jogo)
+// Autores:
+// Bernardo Ferri Schirmer
+// Marco Aurélio Tiago Filho
+
 .global _start
 .text
 _start:
